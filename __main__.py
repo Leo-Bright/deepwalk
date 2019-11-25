@@ -68,12 +68,14 @@ def process(args):
   if data_size < args.max_memory_data_size:
     print("Walking...")
     if args.format == "walks":
+        print("walks")
         walks = []
         with open(args.input) as input_walks:
             for line in input_walks:
                 walks.append(line.strip().split(' ')[::2])
 
     else:
+        print("not walks")
         walks = graph.build_deepwalk_corpus(G, num_paths=args.number_walks,
                                             path_length=args.walk_length, alpha=0, rand=random.Random(args.seed))
     print("Training...")
