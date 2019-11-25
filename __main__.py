@@ -5,18 +5,14 @@ import os
 import sys
 import random
 from io import open
-from argparse import ArgumentParser, FileType, ArgumentDefaultsHelpFormatter
-from collections import Counter
-from concurrent.futures import ProcessPoolExecutor
+from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 import logging
 
-from . import graph
-from . import walks as serialized_walks
+import graph
+import walks as serialized_walks
 from gensim.models import Word2Vec
-from .skipgram import Skipgram
+from skipgram import Skipgram
 
-from six import text_type as unicode
-from six import iteritems
 from six.moves import range
 
 import psutil
@@ -79,7 +75,7 @@ def process(args):
 
     else:
         walks = graph.build_deepwalk_corpus(G, num_paths=args.number_walks,
-                                        path_length=args.walk_length, alpha=0, rand=random.Random(args.seed))
+                                            path_length=args.walk_length, alpha=0, rand=random.Random(args.seed))
     print("Training...")
     model = Word2Vec(walks, size=args.representation_size, window=args.window_size, min_count=0, sg=1, hs=1, workers=args.workers)
   else:
