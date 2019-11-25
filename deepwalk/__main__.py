@@ -54,6 +54,8 @@ def process(args):
     G = graph.load_edgelist(args.input, undirected=args.undirected)
   elif args.format == "mat":
     G = graph.load_matfile(args.input, variable_name=args.matfile_variable_name, undirected=args.undirected)
+  elif args.format == "walks":
+    G = graph.Graph()
   else:
     raise Exception("Unknown file format: '%s'.  Valid formats: 'adjlist', 'edgelist', 'mat'" % args.format)
 
@@ -69,7 +71,14 @@ def process(args):
 
   if data_size < args.max_memory_data_size:
     print("Walking...")
-    walks = graph.build_deepwalk_corpus(G, num_paths=args.number_walks,
+    if args.format == "walks":
+        walks = []
+        with open(args.input) as input_walks:
+            for line in input_walks:
+                walks.append(line.strip().split(' ')[::2])
+
+    else:
+        walks = graph.build_deepwalk_corpus(G, num_paths=args.number_walks,
                                         path_length=args.walk_length, alpha=0, rand=random.Random(args.seed))
     print("Training...")
     model = Word2Vec(walks, size=args.representation_size, window=args.window_size, min_count=0, sg=1, hs=1, workers=args.workers)
